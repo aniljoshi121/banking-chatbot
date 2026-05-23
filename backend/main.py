@@ -6,7 +6,13 @@ from ingest import ingest_file
 import shutil, os
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     message: str
@@ -29,3 +35,8 @@ async def upload(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, f)
     chunks = ingest_file(path)
     return {"message": f"Uploaded and processed {chunks} chunks!"}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const API = "banking-chatbot-production.up.railway.app";
+const API = "http://localhost:8000";
 
 function App() {
   const [dark, setDark] = useState(false);

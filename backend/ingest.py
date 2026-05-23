@@ -3,7 +3,9 @@ from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from sentence_transformers import SentenceTransformer
 import chromadb, os
 
-client = chromadb.PersistentClient(path="./chroma_db")
+CHROMA_PATH = os.environ.get("CHROMA_PATH", "./chroma_db")
+
+client = chromadb.PersistentClient(path=CHROMA_PATH)
 collection = client.get_or_create_collection("banking_docs")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -21,3 +23,14 @@ def ingest_file(filepath: str):
             ids=[f"{os.path.basename(filepath)}_{i}"]
         )
     return len(chunks)
+
+if __name__ == "__main__":
+    data_dir = "data"
+    if os.path.exists(data_dir):
+        for filename in os.listdir(data_dir):
+            if filename.endswith((".pdf", ".txt")):
+                filepath = os.path.join(data_dir, filename)
+                print(f"Ingesting {filename}...")
+                count = ingest_file(filepath)
+                print(f"  → {count} chunks added")
+    print("Ingestion complete.")
