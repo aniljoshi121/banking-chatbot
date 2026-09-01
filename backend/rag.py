@@ -21,7 +21,7 @@ def get_answer(query: str, chat_history: list):
     messages += chat_history
     messages.append({"role": "user", "content": query})
     response = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=messages
     )
     return response.choices[0].message.content
